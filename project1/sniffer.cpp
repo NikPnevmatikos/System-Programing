@@ -189,7 +189,7 @@ int main(int argc, char *argv[]){
 
                         int n = finalname.length();
                         if (write(writefd,finalname.c_str(), n) != n){                            //write filename to pipe
-                            perror("client: filename write error");
+                            perror("filename write error");
                         }
                         close(writefd);
 
