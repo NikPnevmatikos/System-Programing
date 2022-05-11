@@ -213,7 +213,7 @@ int main(int argc, char *argv[]){
             if ( unlink(fifo.c_str()) < 0) {                            //delete named pipes 
                 perror("can't unlink \n");
             }
-            if(workers[i].available == false){
+            if(workers[i].available == true){
                 kill(workers[i].id,SIGCONT);                          //if a worker is stoped it wont recive SIGINT signal
             }
             kill(workers[i].id,SIGINT);                               //give SIGINT signal to workers
