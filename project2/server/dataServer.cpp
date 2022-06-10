@@ -40,7 +40,7 @@ void exit_funct(int sig){
 }
 
 //returns a list with file names and relative paths
-list<string> printdir(DIR *dr,string pathname, list<string> mylist){
+list<string> findfiles(DIR *dr,string pathname, list<string> mylist){
 
 	struct dirent *de;
 	DIR *dr2;
@@ -58,7 +58,7 @@ list<string> printdir(DIR *dr,string pathname, list<string> mylist){
         newpath.append(de->d_name);                     //each file or folder has the relative path too
 
         if((dr2 = opendir(newpath.c_str())) != NULL){       //if filename is folder
-			mylist = printdir(dr2, newpath, mylist);        //call function with that folder as a parameter
+			mylist = findfiles(dr2, newpath, mylist);        //call function with that folder as a parameter
         }
 		else{
             string file = pathname;
@@ -242,7 +242,7 @@ void* communicator(void* sock) {
 	}
 
     list<string> mylist;
-    mylist = printdir(dr,path,mylist);              //return list with all folder files
+    mylist = findfiles(dr,path,mylist);              //return list with all folder files
 
 
     int size = htonl(mylist.size());
@@ -274,7 +274,7 @@ void* communicator(void* sock) {
 
         pthread_cond_signal(&worker_cond);                //unpause worker
 
-        if(files.size() == queue_size){                     //pause if filrs in queue is max
+        if(files.size() == queue_size){                     //pause if files in queue is max
             pthread_cond_wait(&com_cond, &mutex);
         }
 
