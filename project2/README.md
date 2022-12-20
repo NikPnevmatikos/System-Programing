@@ -1,6 +1,4 @@
-Onoma: Nikolaos
-Pnevmatikos: Pnevmatikos
-AM: 1115201900157
+Όνομα: Nikolaos Pnevmatikos
 
 -------------------------------------------------------------------------------------------------
 
@@ -16,18 +14,16 @@ run:
 
 -------------------------------------------------------------------------------------------------
 
-Gia thn ylopoihsh ths ergasias xrhsimopoih8ikan ws templete ta arxeia inet_str_client.c kai 
-inet_str_server.c pou mas do8ikan stis diale3eis. Apo auta ta arxeia xrisimopoih8hke h diadikasia sindeshs server kai clients meso sockets.
+O server πριν αρχίσει να δέχεται συνδέσεις από clients δημιουργεί τα worker threads.
+Με κάθε νέα σύνδεση δημιουργείται ένας communicator thread.
 
-o server prin arxisei na dexetai sindeseis apo clients dimiourgei ta worker threads.
-me ka8e nea sindesh dimiourgeitai enas communicator thread.
+Ο communication thread λαμβάνει από τον client αρχικά τον φάκελο τον οποιο θέλει ο client.
+Από εκεί καλεί την συνάρτηση findfiles όπου αναδρομικά βάζει σε μια λίστα όλα τα αρχεία του φακέλου μαζί με το μονοπάτι τους (πχ path/.../path/file). Αφού βρει όλα τα αρχεία του φακέλου, στέλνει στον client τον αριθμό των αρχείων που θα αντιγράψει ώστε ο client να ξέρεις πόσες φορες θα κάνει επαναληπτικά την ίδια διαδικασία. Μετά αρχίζει να τα προσθέτει στην ουρα, η οποια είναι κοινή για όλους, και αν η ουρα γεμίσει τότε ο communicator thread τίθεται σε παύση. Με το που βάζει κάποιο στοιχειο στη λίστα στέλνει σήμα στον worker thread να ξεκινήσει.
 
-O communication thread lamvanei apo ton client arxika ton fakelo ton opoio 8elei o client.
-Apo ekei kalei thn sinarthsh findfiles opou anadromika vazei se mia lista ola ta arxeia tou fakelou mazi me to monopati tous (px path/.../path/file). Afou vrei ola ta arxeia tou fakelou, stelnei ston client ton ari8mo twn arxeio pou 8a antigra4ei wste o client na 3ereiw poses fores 8a kanei epanaliptika thn idia diadikasia. Meta arxizei na ta pros8etei sthn oura, h opoia einai koinh gia olous, kai an h oura gemisei tote o communicator thread ti8etai se paush. Me to pou vazei kapoio stoixeio sth lista stelnei sima ston worker thread na 3ekinisei.
+Ο worker thread με το που ξεκινάει αν η ουρα είναι κενή σταματάει μέχρι να του στείλει σήμα ο communication thread. Αφού ξαναξεκινήσει βγάζει από την ουρα ένα αρχείο και στέλνει σήμα να συνεχίσει ο communicator thread σε περίπτωση που είναι σταματημένος. Μετά στέλνει στον client το όνομα του αρχείου, Στέλνει τα συνολικά byte του αρχείου και μετά στέλνει τα περιεχόμενα του αρχείου ανά block size την φορα. Τέλος αν το αρχείο ήταν το τελευταίο αρχείο του φακέλου κλείνει το socket επικοινωνίας με τον server.
 
-O worker thread me to pou 3ekinaei an h oura einai kenh stamataei mexri na tou steilei shma o communication thread. Afou 3ana3ekinhsh vgazei apo thn oura ena arxeio kai stelnei sima na sinexisei o communicator thread se periptwsh pou einai stamatimenos. Meta stelnei ston client to onoma tou arxeiou, Stelnei ta sinelika byte tou arxeiou kai meta stelnei ta periexomena tou arxeiou ana block size thn fora. Telos an to arxeio htan to telutaio arxeio tou fakelou kleinei to socket epikoinonias me ton server.
+Ο client με την σειρά του αφού συνδεθεί με τον server στέλνει στον server τον φάκελο που θέλει να αντιγράψει και μετά λαμβάνει από αυτόν τον αριθμό τον αρχείων που είναι στο φάκελο. Για κάθε αρχείο οπότε λαμβάνει το όνομα του, δημιουργεί τους φακέλους που το περιέχουν και τέλος δημιουργεί το ίδιο το αρχείο. Μετά λαμβάνει το συνολικό μέγεθος του αρχείου σε byte και επαναληπτικά μέχρι να συμπληρωθούν τα bytes του αρχείου λαμβάνει τα περιεχόμενα του αρχείου.
 
-O client me thn seira tou afou sinde8ei me ton server stelnei ston server ton fakelo pou 8elei na antigra4ei kai meta lamvanei apo auton ton ari8mo ton arxeiwn pou einai sto fakelo. Gia ka8e arxeio opote lamvanei to onoma tou. dimiourgei touw fakelous pou to periexoun kai telos dimiourgei to idio to arxeio. Meta lamvanei to sinoliko mege8os tou arxeiou se byte kai epanaliptika mexri na simplirw8oun ta bytes tou arxeiou lamvanei ta periexomens tou arxeio se blocksize bytes apo ton server.
 
 
 
